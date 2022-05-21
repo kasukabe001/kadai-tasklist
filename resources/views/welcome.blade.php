@@ -8,8 +8,7 @@
             @include('tasks.tasks')
         </div>
         {{-- タスク作成ページへのリンク --}}
-        {!! link_to_route('signup.get', '新規タスクの投稿', [], ['class' => 'btn btn-primary']) !!} 
- {{--       {!! link_to_route('tasks.create', '新規タスクの投稿', [], ['class' => 'nav-link']) !!}  --}}
+        {!! link_to_route('tasks.create', '新規タスクの投稿', [], ['class' => 'btn btn-primary']) !!}
     @else
         <div class="center jumbotron">
             <div class="text-center">

@@ -74,14 +74,16 @@ class TasksController extends Controller
             'status' => 'required|max:10'
         ]);
 
-        // タスクを作成
-        $task = new Task;
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
+        // 認証済みユーザ（閲覧者）の投稿として作成（リクエストされた値をもとに作成）
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status
+        ]);
 
         // トップページへリダイレクトさせる
         return redirect('/');
+        // 前のURLへリダイレクトさせる
+//        return back();
     }
 
     /**
