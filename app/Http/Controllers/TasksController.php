@@ -25,12 +25,13 @@ class TasksController extends Controller
 
             $data = [
                 'user' => $user,
-                'taskls' => $tasks,
+                'tasks' => $tasks,
             ];
         }
 
         // Welcomeビューでそれらを表示
         return view('welcome', $data);
+
 /*        
         // タスク一覧を取得
         $tasks = Task::all();

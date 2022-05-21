@@ -2,7 +2,14 @@
 
 @section('content')
     @if (Auth::check())
-        {{ Auth::user()->name }}
+        {{ Auth::user()->name }}さんがログインしています。
+        <div class="col-sm-8">
+            {{-- 投稿一覧 --}}
+            @include('tasks.tasks')
+        </div>
+        {{-- タスク作成ページへのリンク --}}
+        {!! link_to_route('signup.get', '新規タスクの投稿', [], ['class' => 'btn btn-primary']) !!} 
+ {{--       {!! link_to_route('tasks.create', '新規タスクの投稿', [], ['class' => 'nav-link']) !!}  --}}
     @else
         <div class="center jumbotron">
             <div class="text-center">
