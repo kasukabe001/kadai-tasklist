@@ -41,6 +41,10 @@ class TasksController extends Controller
      */
     public function create()
     {
+        // 非認証の場合はトップページへリダイレクトさせる
+        if (is_null(\Auth::id())) {
+            return redirect('/');
+        }
 
         $task = new Task;
 
@@ -86,6 +90,11 @@ class TasksController extends Controller
      */
     public function show($id)
     {
+        // 非認証の場合はトップページへリダイレクトさせる
+        if (is_null(\Auth::id())) {
+            return redirect('/');
+        }
+
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
 
@@ -103,6 +112,11 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
+        // 非認証の場合はトップページへリダイレクトさせる
+        if (is_null(\Auth::id())) {
+            return redirect('/');
+        }
+
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
 
