@@ -62,10 +62,6 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        // 非認証の場合はトップページへリダイレクトさせる
-        if (is_null(\Auth::id())) {
-            return redirect('/');
-        }
         // バリデーション
         $request->validate([
             'content' => 'required|max:255',
@@ -90,13 +86,13 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        // 非認証の場合はトップページへリダイレクトさせる
-        if (is_null(\Auth::id())) {
-            return redirect('/');
-        }
-
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
+
+        // 認証済みユーザ（閲覧者）がその投稿の所有者である場合は、トップページへリダイレクトさせる
+        if (\Auth::id() !== $task->user_id) {
+            return redirect('/');
+        }
 
         // タスク詳細ビューでそれを表示
         return view('tasks.show', [
@@ -112,13 +108,13 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        // 非認証の場合はトップページへリダイレクトさせる
-        if (is_null(\Auth::id())) {
-            return redirect('/');
-        }
-
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
+
+        // 認証済みユーザ（閲覧者）がその投稿の所有者である場合は、トップページへリダイレクトさせる
+        if (\Auth::id() !== $task->user_id) {
+            return redirect('/');
+        }
 
         // タスク編集ビューでそれを表示
         return view('tasks.edit', [
