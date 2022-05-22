@@ -32,15 +32,6 @@ class TasksController extends Controller
         // Welcomeビューでそれらを表示
         return view('welcome', $data);
 
-/*        
-        // タスク一覧を取得
-        $tasks = Task::all();
-
-        // タスク一覧ビューでそれを表示
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
-*/
     }
 
     /**
@@ -67,10 +58,13 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-
+        // 非認証の場合はトップページへリダイレクトさせる
+        if (is_null(\Auth::id())) {
+            return redirect('/');
+        }
         // バリデーション
         $request->validate([
-            'content' => 'required',
+            'content' => 'required|max:255',
             'status' => 'required|max:10'
         ]);
 
@@ -82,8 +76,6 @@ class TasksController extends Controller
 
         // トップページへリダイレクトさせる
         return redirect('/');
-        // 前のURLへリダイレクトさせる
-//        return back();
     }
 
     /**
@@ -131,19 +123,24 @@ class TasksController extends Controller
     {
         // バリデーション
         $request->validate([
-            'content' => 'required',
+            'content' => 'required|max:255',
             'status' => 'required|max:10',
         ]);
 
-        // idの値でタスクを検索して取得
-        $task = Task::findOrFail($id);
-        // タスクを更新
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
+        // idの値で投稿を検索して取得
+        $task = \App\Task::findOrFail($id);
 
-        // トップページへリダイレクトさせる
+        // 認証済みユーザ（閲覧者）がその投稿の所有者である場合は、投稿を変更
+        if (\Auth::id() === $task->user_id) {
+            // タスクを更新
+            $task->content = $request->content;
+            $task->status = $request->status;
+            $task->save();
+        }
+
+         // トップページへリダイレクトさせる
         return redirect('/');
+
     }
 
     /**
@@ -155,9 +152,13 @@ class TasksController extends Controller
     public function destroy($id)
     {
         // idの値でタスクを検索して取得
-        $task = Task::findOrFail($id);
+        $task = \App\Task::findOrFail($id);
+
         // タスクを削除
-        $task->delete();
+        // 認証済みユーザ（閲覧者）がその投稿の所有者である場合は、投稿を削除
+        if (\Auth::id() === $task->user_id) {
+            $task->delete();
+        }
 
         // トップページへリダイレクトさせる
         return redirect('/');
